@@ -23,12 +23,12 @@ router.post('/register', (req, res) => {
       res.status(500).json({error: 'Unable to save user'})
     })
   }
-});
+});   
 
 router.post('/login', restrict(), (req, res) => {
   // implement login
  const {username, password} = req.body;
- usersModel.find({username})
+ usersModel.findById({username})
  .then(user => {
   if(user && bcrypt.compareSync(password, user.password))
   {

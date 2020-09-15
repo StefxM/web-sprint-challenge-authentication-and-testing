@@ -47,16 +47,16 @@ router.post("/login", async (req, res) => {
         .json({ message: "We require username and password on the body" });
     }
     
-    const user = await userDB.findByUsername(req.body.username);
+    const user = await userDB.findByUsername({username}).first();
     console.log(user)
-    const validPassword = bcrypt.compareSync(password, user.password);
+    const validPassword = await bcrypt.compare(password, user.password);
     
     if (!validPassword) { 
       //validating password
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const token = JWT.sign(user.id, process.env.SECRET);
-
+    const token = JWT.sign({userID:user.id,}, process.env.JTW_SECRET);
+    res.cookie("token", token)
     res.json({ token });
   } catch (err) {
     console.error(err);

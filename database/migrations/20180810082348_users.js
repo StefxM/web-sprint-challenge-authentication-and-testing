@@ -14,6 +14,6 @@ exports.up = async function(knex) {
   // });
 };
 
-exports.down = function(knex, Promise) {
-  return knex.schema.dropTableIfExists('users');
+exports.down = async function(knex) {
+  await knex.schema.dropTableIfExists('users');
 };

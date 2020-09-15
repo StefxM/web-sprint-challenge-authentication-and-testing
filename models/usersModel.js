@@ -14,6 +14,12 @@ const findByID = async (id) => {
     return await db('users').where({ username }).first();
   };
 
+ const findBy = (filter) => {
+    return db("users")
+      .select("id", "username", "password")
+      .where(filter)
+  }
+
   const addUser = async (user) => {
     return await db('users')
       .insert(user, 'id')
@@ -28,6 +34,7 @@ module.exports = {
     find,
     findByID,
     findByUsername,
+    findBy,
     addUser,
     getJokes,
 }

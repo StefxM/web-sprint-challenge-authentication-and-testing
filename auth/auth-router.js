@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const userDB = require("../models/usersModel");
 
+
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
@@ -47,7 +48,7 @@ router.post("/login", async (req, res) => {
         .json({ message: "We require username and password on the body" });
     }
     
-    const user = await userDB.findByUsername({username}).first();
+    const user = await userDB.findBy({username}).first();
     console.log(user)
     const validPassword = await bcrypt.compare(password, user.password);
     
@@ -55,7 +56,7 @@ router.post("/login", async (req, res) => {
       //validating password
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const token = JWT.sign({userID:user.id,}, process.env.JTW_SECRET);
+    const token = JWT.sign({userID:user.id,}, process.env.SECRET);
     res.cookie("token", token)
     res.json({ token });
   } catch (err) {

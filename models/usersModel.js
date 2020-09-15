@@ -1,7 +1,5 @@
 const db = require('../database/dbConfig')
 
-
-
 const find = () => {
     return db('users').select("id", "username", "password")
 }

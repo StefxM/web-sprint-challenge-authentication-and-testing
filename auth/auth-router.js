@@ -9,7 +9,7 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
   try {
     const existingUser = await userDB.findByUsername(req.body.username);
-    console.log(existingUser);
+    //console.log(existingUser);
 
     if (existingUser) {
       return res
@@ -29,7 +29,7 @@ router.post("/register", async (req, res) => {
       res.status(201).json(user);
     }
   } catch (err) {
-    console.error(err);
+    //console.error(err);
     res.status(500).json({
       errorMessage:
         "Something went horribly horribly wrong. You should not do that again...",

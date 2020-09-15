@@ -3,7 +3,6 @@
   before granting access to the next middleware/route handler
 */
 const jwt = require("jsonwebtoken");
-const userDB = require("../models/usersModel");
 
 function restrict() {
 
@@ -16,7 +15,7 @@ function restrict() {
       try {
         // token is coming from the client's cookie jar, in the "Cookie" header
         const token = req.cookies.token
-        console.log(token)
+        //console.log(token)
         if (!token) {
           return res.status(401).json(authError)
         }

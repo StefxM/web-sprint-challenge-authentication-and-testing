@@ -2,24 +2,39 @@
   complete the middleware code to check if the user is logged in
   before granting access to the next middleware/route handler
 */
-const JWT = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const userDB = require("../models/usersModel");
 
-module.exports = async (req, res, next) => {
-  try {
-    const token = req.headers.authorization;
-    const id = JWT.verify(token, process.env.SECRET);
-    if (id) {
-      const { password, ...user } = await userDB.findByID(id);
-      if (user) {
-        req.user = user;
-        next();
-      } else {
-        throw new Error();
+function restrict() {
+
+  
+    return async (req, res, next) => {
+      const authError = {
+        message: "Invalid credentials",
+      }
+  
+      try {
+        // token is coming from the client's cookie jar, in the "Cookie" header
+        const token = req.cookies.token
+        console.log(token)
+        if (!token) {
+          return res.status(401).json(authError)
+        }
+  
+        // decode the token, re-sign the payload, and check if signature is valid
+        jwt.verify(token, process.env.SECRET, (err, decoded) => {
+          if (err) {
+            return res.status(401).json(authError)
+          }
+          next()
+        })
+      } catch(err) {
+        next(err)
       }
     }
-  } catch (err) {
-    console.error(err);
-    res.status(401).json({ message: "Could not verify the token" });
   }
-};
+
+
+module.exports = {
+  restrict,
+}

@@ -1,4 +1,4 @@
-const request = require('supertest');
+/*const request = require('supertest');
 
 const auth = require('../auth/auth-router');
 const { intersect } = require('../database/dbConfig');
@@ -18,4 +18,4 @@ describe('auth-router.js', () => {
         })
 
 
-})
+})*/

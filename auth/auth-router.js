@@ -1,52 +1,67 @@
-const router = require('express').Router();
-const bcrypt = require('bcryptjs')
-const usersModel = require('../users/usersModel')
-const restrict = require('./authenticate-middleware');
+const express = require("express");
+const bcrypt = require("bcrypt");
+const JWT = require("jsonwebtoken");
+const userDB = require("../models/usersModel");
 
-router.post('/register', (req, res) => {
-  // implement registration
+const router = express.Router();
 
-  const user = req.body
+router.post("/register", async (req, res) => {
+  try {
+    const existingUser = await userDB.findByUsername(req.body.username);
+    console.log(existingUser);
 
-  if(!user.username || !user.password) {
-    return res.status(400).json({
-      message: 'Incorrect values'
-    })
-  } else {
-    const hashPassword = bcrypt.hashSync(user.password)
-    user.password = hashPassword
-    usersModel.addUser(user)
-    .then(newUser => {
-      res.status(201).json(newUser)
-    })
-    .catch( err => {
-      res.status(500).json({error: 'Unable to save user'})
-    })
+    if (existingUser) {
+      return res
+        .status(409)
+        .json({ message: "A user with that username already exist" });
+    } else {
+      const password = bcrypt.hashSync(
+        req.body.password,
+        parseInt(process.env.SALT_ROUNDS, 10)
+      );
+      const newUser = {
+        username: req.body.username,
+        password,
+      };
+
+      const { password: _discardPassword, ...user } = await userDB.addUser(newUser);
+      res.status(201).json(user);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      errorMessage:
+        "Something went horribly horribly wrong. You should not do that again...",
+    });
   }
-});   
+});
 
-router.post('/login', restrict(), (req, res) => {
-  // implement login
- const {username, password} = req.body;
- usersModel.findById({username})
- .then(user => {
-  if(user && bcrypt.compareSync(password, user.password))
-  {
-      // req.session.loggedIn = true;
-      // req.session.username = user.username;
-      console.log("hello")
-      req.session.user = {id:user.id, username:user.username}
-      res.status(200).json({message: `Welcome ${user.username}, heres you're ${user.id}`});
+router.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      //checking if username and password is valid
+      return res
+        .status(400)
+        .json({ message: "We require username and password on the body" });
+    }
+
+    const user = await userDB.findByUsername(username);
+    const validPassword = bcrypt.compareSync(req.body.password,user.password);
+    if (!validPassword) {
+      //validating password
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+    const token = JWT.sign(user.id, process.env.SECRET);
+
+    res.json({ token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      errorMessage:
+        "Something went horribly horribly wrong. You should not do that again...",
+    });
   }
-  else
-  {
-      res.status(401).json({message: 'Access denied'});
-  }
-})
-.catch(error =>
-  {
-      res.status(500).json({error: 'Unable to connect to the database'});
-  })
 });
 
 module.exports = router;

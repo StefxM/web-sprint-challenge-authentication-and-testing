@@ -20,11 +20,14 @@ const findByID = async (id) => {
       .then(([id]) => findByID(id));
   };
 
-
+  const getJokes = async () => {
+    return await db('jokes')
+  }
 
 module.exports = {
     find,
     findByID,
     findByUsername,
     addUser,
+    getJokes,
 }

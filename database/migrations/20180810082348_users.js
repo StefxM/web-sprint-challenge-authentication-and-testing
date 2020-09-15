@@ -8,10 +8,10 @@ exports.up = async function(knex) {
     tbl.string('password').notNullable();
   }) ;
 
-  await knex.schema.createTable('jokes', (tbl) => {
-    tbl.increments('id');
-    tbl.string('jokes')
-  });
+  // await knex.schema.createTable('jokes', (tbl) => {
+  //   tbl.increments('id');
+  //   tbl.string('jokes')
+  // });
 };
 
 exports.down = function(knex, Promise) {

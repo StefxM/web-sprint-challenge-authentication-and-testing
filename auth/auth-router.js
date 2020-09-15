@@ -1,5 +1,5 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const userDB = require("../models/usersModel");
 
@@ -37,18 +37,21 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  try {
+  try { 
     const { username, password } = req.body;
+    
     if (!username || !password) {
       //checking if username and password is valid
       return res
         .status(400)
         .json({ message: "We require username and password on the body" });
     }
-
-    const user = await userDB.findByUsername(username);
-    const validPassword = bcrypt.compareSync(req.body.password,user.password);
-    if (!validPassword) {
+    
+    const user = await userDB.findByUsername(req.body.username);
+    console.log(user)
+    const validPassword = bcrypt.compareSync(password, user.password);
+    
+    if (!validPassword) { 
       //validating password
       return res.status(401).json({ message: "Invalid credentials" });
     }

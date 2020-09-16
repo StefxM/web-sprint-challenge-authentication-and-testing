@@ -25,12 +25,13 @@ Commit your code regularly and meaningfully. This helps both you (in case you ev
 Be prepared to demonstrate your understanding of this week's concepts by answering questions on the following topics. You might prepare by writing down your own answers before hand.
 
 1. Differences between using _sessions_ or _JSON Web Tokens_ for authentication.
+JSON web tokens are stored on the client side and sessions uses the server memory to store user data.
 
-2. What does `bcrypt` do to help us store passwords in a secure manner.
+2. What does `bcrypt` do to help us store passwords in a secure manner. Bcrypt helps hashing passwords to prevent hackers from stealing them.
 
-3. How are unit tests different from integration and end-to-end testing.
+3. How are unit tests different from integration and end-to-end testing. Unit tests test app logic and integration testing test route handlers and middleware
 
-4. How _Test Driven Development_ changes the way we write applications and tests.
+4. How _Test Driven Development_ changes the way we write applications and tests. By writing code thats pasts test first and if not writing new code in order to pass the test part by part.
 
 You are expected to be able to answer questions in these areas. Your responses contribute to your Sprint Challenge grade.
 
@@ -52,7 +53,7 @@ Your finished project must include all of the following requirements:
 - [ ] An authentication workflow with functionality for account creation and login implemented inside `/auth/auth-router.js`. A `user` has `username` and `password`. Both properties are required.
 - [ ] Middleware used to restrict access to resources for non authenticated requests. Use the file: `./auth/authenticate-middleware.js` as a starting point.
 - [ ] Configuration for running tests using `Jest`.
-- [ ] A **minimum o 2 tests** per API endpoint.
+- [ ] A **minimum of 2 tests** per API endpoint.
 
 **Note**: the database already has the users table, but if you run into issues, the migrations are available.
 
